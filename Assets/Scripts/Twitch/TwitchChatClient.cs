@@ -116,4 +116,20 @@ public class TwitchChatClient : Singleton<TwitchChatClient>
     {
         SendChatMessage("@" + targetUsername + " " + message);
     }
+
+    public void SendChatMessageTargeted(List<string> targetUsernames, string message)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        
+        //Add usernames @'ed
+        foreach(string username in targetUsernames)
+        {
+            sb.Append("@" + username + " ");
+        }
+
+        //Add message
+        sb.Append(message);
+
+        SendChatMessage(sb.ToString());
+    } 
 }
