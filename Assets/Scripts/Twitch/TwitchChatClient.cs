@@ -16,9 +16,6 @@ public class TwitchChatClient : Singleton<TwitchChatClient>
     //Prefix for bot chat messages
     private const string chatMessagePrefix = "[MiniGames Bot]";
 
-    //Event Triggered when we get a chat command
-    public delegate void TwitchChatMessageEvent(string message);
-
     //Prevent non-singleton constructor use.
     protected TwitchChatClient() { }
 

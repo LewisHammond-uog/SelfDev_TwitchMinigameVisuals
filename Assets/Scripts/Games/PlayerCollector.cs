@@ -9,8 +9,8 @@ using UnityEngine;
 public class PlayerCollector
 {
     //List of users
-                        //userID, Twitch User
-    private Dictionary<string, TwitchUser> joinedUsers;
+                     //userID, Twitch User
+    public Dictionary<string, TwitchUser> joinedUsers { get; private set; }
 
     //Var for if we are allowing users to join
     private bool joinAllowed = false;
@@ -20,6 +20,11 @@ public class PlayerCollector
 
     //Maximum number of players allowed
     private int maxPlayersInList = 0;
+
+    //Events for player leaving joining
+    public delegate void PlayerCollectEvent(string username);
+    public event PlayerCollectEvent PlayerJoin;
+    public event PlayerCollectEvent PlayerLeave;
 
     /// <summary>
     /// Constructor for creating the player collector
@@ -84,33 +89,40 @@ public class PlayerCollector
     /// <param name="e"></param>
     private void ChatCommandReceived(object sender, TwitchLib.Client.Events.OnChatCommandReceivedArgs e)
     {
+        //Get the UserID and Username from the command
+        string incomingUserID = e.Command.ChatMessage.UserId;
+        string incomingUsername = e.Command.ChatMessage.Username;
+       
         //Check for join command
-        if(e.Command.CommandText.ToLower() == joinWord)
+        if (e.Command.CommandText.ToLower() == joinWord)
         {
+            HandlePlayerJoin(incomingUserID, incomingUsername);
+        }
+    }
 
-            //Get the UserID and Username from the command
-            string incomingUserID = e.Command.ChatMessage.UserId;
-            string incomingUsername = e.Command.ChatMessage.Username;
+    private void HandlePlayerJoin(string incomingUserID, string incomingUsername)
+    {
+        //If joining is not allowed then tell user and exit
+        if (!joinAllowed)
+        {
+            TwitchChatClient.Instance.SendChatMessageTargeted(incomingUsername, "Joining the minigame is not currently allowed!");
+            return;
+        }
 
-            //If joining is not allowed then tell user and exit
-            if (!joinAllowed)
+        //Add the user to our user list - if they are not already
+        if (!joinedUsers.ContainsKey(incomingUserID))
+        {
+            TwitchUser user = new TwitchUser(incomingUserID, incomingUsername);
+            joinedUsers.Add(incomingUserID, user);
+
+            //Tell the user that we have added them
+            TwitchChatClient.Instance.SendChatMessageTargeted(incomingUsername, "You have been added to the game!");
+            PlayerJoin?.Invoke(incomingUsername);
+
+            //We just added a new user, check if we have reached our max player count if we have then stop new joins
+            if (joinedUsers.Count == maxPlayersInList)
             {
-                TwitchChatClient.Instance.SendChatMessageTargeted(incomingUsername, "Joining the minigame is not currently allowed!");
-                return;
-            }
-
-            //Add the user to our user list - if they are not already
-            if (!joinedUsers.ContainsKey(incomingUserID)) {
-                joinedUsers.Add(incomingUserID, new TwitchUser(incomingUserID, incomingUsername));
-
-                //Tell the user that we have added them
-                TwitchChatClient.Instance.SendChatMessageTargeted(incomingUsername, "You have been added to the game!");
-
-                //We just added a new user, check if we have reached our max player count if we have then stop new joins
-                if(joinedUsers.Count == maxPlayersInList)
-                {
-                    SetAllowJoin(false , "Max players reached");
-                }
+                SetAllowJoin(false, "Max players reached");
             }
         }
     }

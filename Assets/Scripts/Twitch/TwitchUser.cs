@@ -11,6 +11,7 @@ public struct TwitchUser
 {
     public string username { private set; get; } //Username of the user (can change if the user changes their name)
     public string userID { private set; get; } //Internal Twitch ID of the user (does not change)
+    
 
     /// <summary>
     /// Create a Twitch user from their username

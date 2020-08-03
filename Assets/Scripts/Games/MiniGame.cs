@@ -18,7 +18,7 @@ public class MiniGame : MonoBehaviour
     private GAME_STATE gameState = GAME_STATE.Unitialised;
 
     //Player collector for letting users join
-    private PlayerCollector playerList;
+    public PlayerCollector playerList { get; private set; }
 
     //Timers for warmup etc.
     private float initTimer = 0f;
@@ -27,7 +27,7 @@ public class MiniGame : MonoBehaviour
     [SerializeField]
     protected MiniGameSettings settings;
 
-    private void Start()
+    private void Awake()
     {
         //Check that we have some settings
         if(settings == null)
