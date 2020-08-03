@@ -27,6 +27,12 @@ public class MiniGame : MonoBehaviour
     [SerializeField]
     protected MiniGameSettings settings;
 
+    //Events for game start/stop
+    public delegate void GameStateEvent();
+    public event GameStateEvent GameInit;
+    public event GameStateEvent GameStart;
+    public event GameStateEvent GameEnd;
+
     private void Awake()
     {
         //Check that we have some settings
@@ -84,6 +90,7 @@ public class MiniGame : MonoBehaviour
 
         //Start countdown
         initTimer = settings.maxWaitToStartTime;
+        GameInit?.Invoke();
     }
 
     /// <summary>

@@ -7,32 +7,44 @@ using System.Text;
 public class JoinedUserUI : MonoBehaviour
 {
     //Minigame text to display on
-    [SerializeField] private TextMeshProUGUI displayText;
+    [SerializeField] private TextMeshProUGUI joinText, namesText;
 
     //Link to the minigame that we showing UI for
     [SerializeField] private MiniGame activeGame;
 
-    //Colour Customisations
-    //[SerializeField] private Color
-
-    //When we are enabled then get the list of joined users
     private void Start()
     {
-        if (displayText != null)
+        //Trigger player list to update when the player collector updates
+        if (activeGame != null)
+        {
+            if (activeGame.playerList != null)
+            {
+                activeGame.playerList.PlayerJoin += AddNewPlayerToList;
+                activeGame.GameInit += InitUI;
+            }
+        }
+
+        //On Start hide the UI
+        joinText.enabled = false;
+        namesText.enabled = false;
+    }
+
+    /// <summary>
+    /// Initalises the UI
+    /// </summary>
+    private void InitUI()
+    {
+        if (namesText != null)
         {
             //Get a list of the current players when UI starts
             RefreshList();
-        }
 
-        //Trigger player list to update when the player collector updates
-        if(activeGame != null)
-        {
-            if(activeGame.playerList != null)
-            {
-                activeGame.playerList.PlayerJoin += AddNewPlayerToList;
-            }
+            //Enable UI
+            joinText.enabled = true;
+            namesText.enabled = true;
         }
     }
+
 
     private void OnDisable()
     {
@@ -41,6 +53,7 @@ public class JoinedUserUI : MonoBehaviour
             if (activeGame.playerList != null)
             {
                 activeGame.playerList.PlayerJoin -= AddNewPlayerToList;
+                activeGame.GameInit -= InitUI;
             }
         }
     }
@@ -50,9 +63,9 @@ public class JoinedUserUI : MonoBehaviour
     /// </summary>
     private void AddNewPlayerToList(string playerName)
     {
-        if(displayText != null)
+        if(namesText != null)
         {
-            displayText.text += "\n" + playerName;
+            namesText.text += "\n" + playerName;
         }
     }
 
@@ -63,7 +76,7 @@ public class JoinedUserUI : MonoBehaviour
     public void RefreshList()
     {
         //Clear the name list
-        displayText.text = string.Empty;
+        namesText.text = string.Empty;
 
         //Check mini game is valid
         if(activeGame == null)
