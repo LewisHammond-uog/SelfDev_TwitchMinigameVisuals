@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cef2ad5714c6c4cbf665fd6818aa64, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: 
-  gameName: Untitled Minigame
+  gameName: Battle Royale
   maxWaitToStartTime: 20
   minPlayerCount: 1
-  maxPlayerCount: 2
+  maxPlayerCount: 9

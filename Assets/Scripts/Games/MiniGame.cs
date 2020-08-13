@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Parent class to run a minigame from
 /// </summary>
-public class MiniGame : MonoBehaviour
+public abstract class MiniGame : MonoBehaviour
 {
     //Enum for the game state
     public enum GAME_STATE
@@ -102,6 +102,9 @@ public class MiniGame : MonoBehaviour
 
         //Send chat message
         TwitchChatClient.Instance.SendChatMessageTargeted(playerList.GetJoinedUsernames(), "The game is now starting!");
+
+        //Start Game
+        GameStart?.Invoke();
     }
 
     /// <summary>
