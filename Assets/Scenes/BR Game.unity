@@ -480,7 +480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawColour: {r: 1, g: 1, b: 1, a: 1}
-  drawRadius: 10.17
+  drawRadius: 10
 --- !u!1 &695348358
 GameObject:
   m_ObjectHideFlags: 0
